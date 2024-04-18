@@ -35,7 +35,7 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="0.5" />
 
         <EditText
             android:id="@+id/eTname"
@@ -74,6 +74,18 @@
             android:ems="10"
             android:hint="password"
             android:inputType="textPassword" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <Spinner
+            android:id="@+id/orgSpin"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:visibility="invisible" />
 
         <Space
             android:layout_width="match_parent"

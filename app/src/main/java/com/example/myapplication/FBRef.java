@@ -9,14 +9,12 @@ public class FBRef {
     public static FirebaseDatabase FBDB = FirebaseDatabase.getInstance();
     public static DatabaseReference refInactiveUsers=FBDB.getReference("Inactive users");
     public static DatabaseReference refActiveUsers=FBDB.getReference("Active users");
-    public static DatabaseReference refTasks;
-    public static DatabaseReference refDoneTasks;
-    public static DatabaseReference refYears;
-    public static void getUser(FirebaseUser fbuser){
+    public static DatabaseReference refUsersOnHold=FBDB.getReference("Users on hold");
+    public static void getUser(FirebaseUser fbuser, String organization){
         uid = fbuser.getUid();
-        refTasks=FBDB.getReference("Tasks").child(uid);
-        refDoneTasks=FBDB.getReference("Done_Tasks").child(uid);
-        refYears=FBDB.getReference("Years").child(uid);
+        refInactiveUsers=FBDB.getReference(organization).child("Inactive users").child(uid);
+        refActiveUsers=FBDB.getReference(organization).child("Active users").child(uid);
+        refUsersOnHold=FBDB.getReference(organization).child("Users on hold").child(uid);
     }
     public static FirebaseAuth refAuth=FirebaseAuth.getInstance();
 

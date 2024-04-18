@@ -1,19 +1,15 @@
 package com.example.myapplication.Obj;
 
 public class User {
-    private String uid;
-    private String username;
-    private String organization;
+    private String uid, username, organization, profile_img, active_project;
     private int position;
+    private boolean active;
     /**
      * 0=boss
      * 1=manager
      * 2=worker
+     * 3=user on hold
      */
-    private String profile_img;
-    private boolean active;
-    private String active_project;
-
     public User() {}
     public User(String uid, String username, String organization, int position, String profile_img, boolean active, String active_project) {
         this.uid = uid;

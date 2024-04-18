@@ -13,6 +13,21 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.MasterMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.WorkerMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.ManagerMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.BossMainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.WaitingActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.LoginActivity"
             android:exported="true">
             <intent-filter>
