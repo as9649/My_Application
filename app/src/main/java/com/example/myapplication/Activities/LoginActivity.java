@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private Spinner orgSpin;
 
     private String name, email, password, organization;
-    public User userdb;
+    public static User userdb;
     private static final String myUid="zQK95NZxTpUWf3EqLV3rb6oaE2i1";
     private Boolean stayConnect, registered,ok;
     private SharedPreferences settings;
