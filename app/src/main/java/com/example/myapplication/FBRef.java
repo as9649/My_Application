@@ -7,14 +7,16 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FBRef {
     public static String uid;
     public static FirebaseDatabase FBDB = FirebaseDatabase.getInstance();
-    public static DatabaseReference refOrg, refInactiveUsers, refActiveUsers, refUsersOnHold, refYears;
+    public static DatabaseReference refOrganizations, refOrg, refInactiveUsers, refActiveUsers, refUsersOnHold, refYears;
+
     public static void getUser(FirebaseUser fbuser, String organization){
         uid = fbuser.getUid();
-        refOrg=FBDB.getReference(organization);
+        refOrganizations=FBDB.getReference("Organizations");
+        refOrg=refOrganizations.child(organization);
         refInactiveUsers=refOrg.child("Inactive users").child(uid);
         refActiveUsers=refOrg.child("Active users").child(uid);
         refUsersOnHold=refOrg.child("Users on hold").child(uid);
-        refYears=refOrg.child("Years").child(uid);
+        refYears=FBDB.getReference("Years").child(uid);
     }
     public static FirebaseAuth refAuth=FirebaseAuth.getInstance();
 

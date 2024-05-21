@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Organization {
     private String keyId, orgName, logoUrl;
-    private ArrayList<String> workers, managers;
+    private ArrayList<User> workers, managers;
     private static ArrayList<String> organizations=new ArrayList<String>();
 
 
 
-    public Organization(String keyId, String orgName, String logoUrl, ArrayList<String> workers, ArrayList<String> managers) {
+    public Organization(String keyId, String orgName, String logoUrl, ArrayList<User> workers, ArrayList<User> managers) {
         this.keyId = keyId;
         this.orgName=orgName;
         this.logoUrl=logoUrl;
@@ -53,19 +53,19 @@ public class Organization {
         this.logoUrl = logoUrl;
     }
 
-    public ArrayList<String> getWorkers() {
+    public ArrayList<User> getWorkers() {
         return workers;
     }
 
-    public void setWorkers(ArrayList<String> workers) {
-        this.workers = workers;
-    }
+//    public void setWorkers(ArrayList<String> workers) {
+//        this.workers = workers;
+//    }
 
-    public ArrayList<String> getManagers() {
+    public ArrayList<User> getManagers() {
         return managers;
     }
 
-    public void setManagers(ArrayList<String> managers) {
-        this.managers = managers;
-    }
+//    public void setManagers(ArrayList<String> managers) {
+//        this.managers = managers;
+//    }
 }
