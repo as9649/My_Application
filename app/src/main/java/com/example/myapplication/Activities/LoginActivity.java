@@ -102,13 +102,13 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         Boolean isChecked = settings.getBoolean("stayConnect", false);
 
         //if (refAuth.getCurrentUser() != null && isChecked) {
-        if (refAuth.getCurrentUser()!=null){
+        if (refAuth.getCurrentUser()!=null && !isChecked){
 
             if (refAuth.getCurrentUser().getUid().equals(myUid)) {
                 Intent si = new Intent(LoginActivity.this, AdminActivity.class);
                 startActivity(si);
             } else {
-                organization=settings.getString("organization", null);
+                organization=settings.getString("organization", " ");
                 FBRef.getUser(refAuth.getCurrentUser(), organization);
                 ok = false;
                 refActiveUsers.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -217,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
             if (registered) {
                 String org=settings.getString("organization", null);
 
-                if (org!=null && organization.equals(org)){
+                if (org!=null && !organization.equals(org)){
                     Toast.makeText(LoginActivity.this, "Wrong organization", Toast.LENGTH_SHORT).show();
                 }
                 else {

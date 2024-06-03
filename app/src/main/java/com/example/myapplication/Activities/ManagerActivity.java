@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.myapplication.Obj.Presence;
 import com.example.myapplication.Obj.User;
 import com.example.myapplication.R;
 import com.example.myapplication.FBRef;
@@ -24,10 +25,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class ManagerActivity extends AppCompatActivity {
-    Button listBtn;
+    Button listBtn, attendanceListBtn;
+    public static ArrayList<Presence> attendanceList;
+
     public static ArrayList<User> nonActiveUsers;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +52,22 @@ public class ManagerActivity extends AppCompatActivity {
             }
         });
 
+        attendanceListBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent si = new Intent(ManagerActivity.this, AttendanceListActivity.class);
+                startActivity(si);
+            }
+        });
+
     }
 
     private void initViews() {
         listBtn=findViewById(R.id.listBtn);
-        listBtn.setText("");
+        attendanceListBtn=findViewById(R.id.attendanceListBtn);
         nonActiveUsers = new ArrayList<User>();
+        attendanceList=new ArrayList<Presence>();
+
     }
 
     @Override
@@ -69,6 +86,25 @@ public class ManagerActivity extends AppCompatActivity {
                     }
                     listBtn.setText(""+nonActiveUsers.size());
                 }
+            }
+        });
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+        String date = df.format(c);
+
+        refOrg.child("Presence").child(date).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task2) {
+                if (task2.isSuccessful()){
+                    DataSnapshot dataSnapshot=task2.getResult();
+                    attendanceList.clear();
+                    for (DataSnapshot data: dataSnapshot.getChildren()){
+                        Presence presence=data.getValue(Presence.class);
+                        attendanceList.add(presence);
+                    }
+                }
+                attendanceListBtn.setText("Attendance list ("+attendanceList.size()+")");
             }
         });
 

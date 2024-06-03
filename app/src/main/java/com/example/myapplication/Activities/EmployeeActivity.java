@@ -1,8 +1,11 @@
 package com.example.myapplication.Activities;
 
 import static com.example.myapplication.Activities.LoginActivity.userdb;
+import static com.example.myapplication.FBRef.date;
+import static com.example.myapplication.FBRef.refActiveUsers;
 import static com.example.myapplication.FBRef.refAuth;
 import static com.example.myapplication.FBRef.refPresence;
+import static com.example.myapplication.FBRef.uid;
 
 import android.Manifest;
 
@@ -10,6 +13,7 @@ import com.example.myapplication.FBRef.*;
 
 import com.example.myapplication.FBRef;
 import com.example.myapplication.Obj.Presence;
+import com.example.myapplication.Obj.User;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationCallback;
@@ -42,6 +46,7 @@ import androidx.core.app.ActivityCompat;
 import com.example.myapplication.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -136,16 +141,21 @@ public class EmployeeActivity extends AppCompatActivity {
                                         double longitude = locationResult.getLocations().get(index).getLongitude();
 
                                         Date c = Calendar.getInstance().getTime();
-                                        System.out.println("Current time => " + c);
-
                                         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                                        String formattedDate = df.format(c);
+                                        String date = df.format(c);
+
+                                        refActiveUsers.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DataSnapshot> task1) {
+                                                userdb = task1.getResult().getValue(User.class);
+                                                Presence presencedb=new Presence(date, userdb.getUsername(), uid,  latitude, longitude);
+                                                refPresence.setValue(presencedb);
+                                            }
+                                        });
 
 
-                                        Presence presencedb=new Presence(formattedDate, latitude, longitude);
-                                        refPresence.setValue(presencedb);
 
-                                        titleTV.setText("Latitude: "+ latitude + "\n" + "Longitude: "+ longitude+ "\n"+ "Date: "+ formattedDate);
+                                        titleTV.setText("Latitude: "+ latitude + "\n" + "Longitude: "+ longitude+ "\n"+ "Date: "+ date);
                                     }
                                 }
                             }, Looper.getMainLooper());
