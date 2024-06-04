@@ -57,33 +57,8 @@ public class AttendanceListActivity extends AppCompatActivity implements Adapter
         ArrayAdapter<String> adp=new ArrayAdapter<String>(AttendanceListActivity.this,
                 androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, attendanceArr);
         attendanceLV.setAdapter(adp);
-//        vel = new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                attendanceList.clear();
-//                for(DataSnapshot dataFull : snapshot.getChildren()) {
-//                    for(DataSnapshot data : dataFull.getChildren()) {
-//                        attendanceList.add(data.getValue(Presence.class));
-//                    }
-//                }
-//
-//                attendanceArr=new String[attendanceList.size()];
-//
-//                for (int i=0; i<attendanceList.size(); i++){
-//                    attendanceArr[i]=attendanceList.get(i).getUsername();
-//                }
-//
-//                ArrayAdapter<String> adp=new ArrayAdapter<String>(AttendanceListActivity.this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, attendanceArr);
-//                attendanceLV.setAdapter(adp);
-//            };
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        };
 
+        attendanceLV.setOnItemClickListener(this);
     }
 
     @Override
@@ -98,6 +73,8 @@ public class AttendanceListActivity extends AppCompatActivity implements Adapter
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent si=new Intent(AttendanceListActivity.this, MapActivity.class);
+        si.putExtra("latitude",attendanceList.get(position).getLatitude());
+        si.putExtra("longitude", attendanceList.get(position).getLongitude());
         startActivity(si);
     }
 }
