@@ -49,10 +49,11 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private CheckBox cBstayconnect;
     private Button btn;
     private Spinner orgSpin;
+    ArrayList<String> orgList;
 
     private String name, email, password, organization;
     public static User userdb;
-    private static final String myUid="zQK95NZxTpUWf3EqLV3rb6oaE2i1";
+    private static final String myUid="MqVWerXiwCdUs05wptxFHNEYlh42";
     private Boolean stayConnect, registered,ok;
     private SharedPreferences settings;
     private int activeYear = 1970;
@@ -83,12 +84,9 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         cBstayconnect= findViewById(R.id.cBstayconnect);
         btn= findViewById(R.id.btn);
         orgSpin= findViewById(R.id.orgSpin);
-
-        Organization organization1=new Organization("", "org1", "", null, null);
-        Organization organization2=new Organization("", "org2", "", null, null);
-
+        orgList=FBRef.getOrganizationsList();
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
-                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,Organization.getOrganizations());
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,orgList);
         orgSpin.setAdapter(adp);
         orgSpin.setOnItemSelectedListener(this);
     }
@@ -102,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         Boolean isChecked = settings.getBoolean("stayConnect", false);
 
         //if (refAuth.getCurrentUser() != null && isChecked) {
-        if (refAuth.getCurrentUser()!=null && !isChecked){
+        if (refAuth.getCurrentUser()!=null && isChecked){
 
             if (refAuth.getCurrentUser().getUid().equals(myUid)) {
                 Intent si = new Intent(LoginActivity.this, AdminActivity.class);
@@ -428,8 +426,7 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0){
-            ArrayList<String>organizationList=Organization.getOrganizations();
-            organization=organizationList.get(position);
+            organization=orgList.get(position);
         }
 
     }

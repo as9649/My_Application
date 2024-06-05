@@ -7,6 +7,11 @@ public class Organization {
     private ArrayList<User> workers, managers;
     private static ArrayList<String> organizations=new ArrayList<String>();
 
+    public Organization(){}
+
+    public Organization(String orgName){
+        this.orgName=orgName;
+    }
 
 
     public Organization(String keyId, String orgName, String logoUrl, ArrayList<User> workers, ArrayList<User> managers) {
