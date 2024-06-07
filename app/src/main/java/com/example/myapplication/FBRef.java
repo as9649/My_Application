@@ -22,8 +22,12 @@ public class FBRef {
     public static FirebaseAuth refAuth=FirebaseAuth.getInstance();
     public static DatabaseReference refOrganizations=FBDB.getReference("Organizations");
     public static DatabaseReference refOrganizationsList=FBDB.getReference("Organizations list");
-    public static DatabaseReference refPresence, refOrg, refInactiveUsers, refActiveUsers, refUsersOnHold, refYears;
+    public static DatabaseReference refPresence, refOrg, refActiveUsers, refUsersOnHold;
 
+
+    /*
+    הפעולה מחזירה את רשימת שמות הארגונים שקיימים בבסיס הנתונים
+     */
     public static ArrayList<String> getOrganizationsList(){
         ArrayList<String> orgList=new ArrayList<String>();
         orgList.add("Organization:");
@@ -34,8 +38,7 @@ public class FBRef {
                 if (task.isSuccessful()){
                     DataSnapshot dataSnapshot=task.getResult();
                     for (DataSnapshot data : dataSnapshot.getChildren()){
-                        //Organization organization=data.getValue(Organization.class);
-                        orgList.add(data.getValue(String.class));
+                        orgList.add(data.getKey());
                     }
                 }
             }
@@ -51,10 +54,8 @@ public class FBRef {
 
         refOrg=refOrganizations.child(organization);
         refPresence=refOrg.child("Presence").child(date).child(uid);
-        refInactiveUsers=refOrg.child("Inactive users").child(uid);
         refActiveUsers=refOrg.child("Active users").child(uid);
         refUsersOnHold=refOrg.child("Users on hold").child(uid);
-        refYears=FBDB.getReference("Years").child(uid);
     }
 
 

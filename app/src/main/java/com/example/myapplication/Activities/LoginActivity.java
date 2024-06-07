@@ -1,13 +1,14 @@
 package com.example.myapplication.Activities;
 
-import static com.example.myapplication.FBRef.*;
+import static com.example.myapplication.FBRef.refActiveUsers;
+import static com.example.myapplication.FBRef.refAuth;
+import static com.example.myapplication.FBRef.refUsersOnHold;
+import static com.example.myapplication.FBRef.uid;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -24,22 +25,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.FBRef;
 import com.example.myapplication.Obj.User;
-import com.example.myapplication.Obj.Organization;
 import com.example.myapplication.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -48,18 +43,15 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
     private EditText eTname, eTemail, eTpass;
     private CheckBox cBstayconnect;
     private Button btn;
-    private Spinner orgSpin;
     ArrayList<String> orgList;
 
-    private String name, email, password, organization;
+    private String name;
+    private String organization;
     public static User userdb;
-    private static final String myUid="MqVWerXiwCdUs05wptxFHNEYlh42";
-    private Boolean stayConnect, registered,ok;
+    private static final String myUid="3uaXzQFKm2SMajBmmqtNANFjJ903";
+    private Boolean registered,ok;
     private SharedPreferences settings;
-    private int activeYear = 1970;
-    private final int REQUEST_CODE = 100;
     Intent si;
-
 
 
     @Override
@@ -69,7 +61,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
 
         settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         initViews();
-        stayConnect=false;
         registered=true;
         organization=null;
         regoption();
@@ -83,10 +74,10 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         eTpass= findViewById(R.id.eTpass);
         cBstayconnect= findViewById(R.id.cBstayconnect);
         btn= findViewById(R.id.btn);
-        orgSpin= findViewById(R.id.orgSpin);
+        Spinner orgSpin = findViewById(R.id.orgSpin);
         orgList=FBRef.getOrganizationsList();
-        ArrayAdapter<String> adp = new ArrayAdapter<String>(this,
-                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,orgList);
+        ArrayAdapter<String> adp = new ArrayAdapter<>(this,
+                androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, orgList);
         orgSpin.setAdapter(adp);
         orgSpin.setOnItemSelectedListener(this);
     }
@@ -160,14 +151,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
         }
     }
 
-    /**
-     * On activity pause - If logged in & asked to be remembered - kill activity.
-     */
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        if (stayConnect) finish();
-//    }
 
     private void regoption() {
         SpannableString ss = new SpannableString("Don't have an account?  Register here!");
@@ -211,16 +194,22 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
      */
     public void logorreg(View view) {
         if (organization!=null){
+            String email = eTemail.getText().toString();
+            String password = eTpass.getText().toString();
 
-            if (registered) {
+            if (email.isEmpty()){
+                Toast.makeText(LoginActivity.this, "enter email", Toast.LENGTH_LONG).show();
+            }
+            else if (password.isEmpty()){
+                Toast.makeText(LoginActivity.this, "enter password", Toast.LENGTH_LONG).show();
+            }
+            else if (registered) {
                 String org=settings.getString("organization", null);
 
                 if (org!=null && !organization.equals(org)){
                     Toast.makeText(LoginActivity.this, "Wrong organization", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    email = eTemail.getText().toString();
-                    password = eTpass.getText().toString();
 
                     final ProgressDialog pd = ProgressDialog.show(this, "Login", "Connecting...", true);
                     refAuth.signInWithEmailAndPassword(email, password)
@@ -230,11 +219,12 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                                     pd.dismiss();
                                     if (task1.isSuccessful()) {
 
-
+                                        SharedPreferences.Editor editor = settings.edit();
+                                        editor.putBoolean("stayConnect", cBstayconnect.isChecked());
+                                        editor.putString("organization", organization);
+                                        editor.commit();
                                         if (refAuth.getCurrentUser().getUid().equals(myUid)) {
-                                            SharedPreferences.Editor editor = settings.edit();
-                                            editor.putBoolean("stayConnect", cBstayconnect.isChecked());
-                                            editor.commit();
+
                                             Intent si = new Intent(LoginActivity.this, AdminActivity.class);
                                             startActivity(si);
                                         } else {
@@ -256,9 +246,6 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
                                                             refActiveUsers.removeValue();
                                                             si = new Intent(LoginActivity.this, WaitingActivity.class);
                                                         }
-                                                        SharedPreferences.Editor editor = settings.edit();
-                                                        editor.putBoolean("stayConnect", cBstayconnect.isChecked());
-                                                        editor.commit();
                                                         ok = true;
                                                         si.putExtra("username", userdb.getUsername());
                                                         startActivity(si);
@@ -305,130 +292,53 @@ public class LoginActivity extends AppCompatActivity implements AdapterView.OnIt
             }
             else {
                 name = eTname.getText().toString();
-                email = eTemail.getText().toString();
-                password = eTpass.getText().toString();
 
-                final ProgressDialog pd = ProgressDialog.show(this, "Register", "Registering...", true);
-                refAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task4) {
-                                pd.dismiss();
-                                if (task4.isSuccessful()) {
-                                    FBRef.getUser(refAuth.getCurrentUser(), organization);
-                                    userdb = new User(uid, name, organization, "", false,false, "");
-                                    refUsersOnHold.setValue(userdb);
-                                    SharedPreferences.Editor editor = settings.edit();
-                                    editor.putBoolean("stayConnect", cBstayconnect.isChecked());
-                                    editor.putString("organization", organization);
-                                    editor.commit();
+                if (name.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "enter your name", Toast.LENGTH_LONG).show();
+                } else {
+                    final ProgressDialog pd = ProgressDialog.show(this, "Register", "Registering...", true);
+                    refAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task4) {
+                                    pd.dismiss();
+                                    if (task4.isSuccessful()) {
+                                        FBRef.getUser(refAuth.getCurrentUser(), organization);
+                                        userdb = new User(uid, name, organization, false, false);
+                                        refUsersOnHold.setValue(userdb);
+                                        SharedPreferences.Editor editor = settings.edit();
+                                        editor.putBoolean("stayConnect", cBstayconnect.isChecked());
+                                        editor.putString("organization", organization);
+                                        editor.commit();
 
-                                    Toast.makeText(LoginActivity.this, "Successful registration", Toast.LENGTH_SHORT).show();
-                                    //setActiveYear();
-                                    Intent si=new Intent(LoginActivity.this, WaitingActivity.class);
-                                    si.putExtra("username", userdb.getUsername());
-                                    startActivity(si);
+                                        Toast.makeText(LoginActivity.this, "Successful registration", Toast.LENGTH_SHORT).show();
+                                        //setActiveYear();
+                                        Intent si = new Intent(LoginActivity.this, WaitingActivity.class);
+                                        si.putExtra("username", userdb.getUsername());
+                                        startActivity(si);
 
-                                } else {
-                                    if (task4.getException() instanceof FirebaseAuthUserCollisionException)
-                                        Toast.makeText(LoginActivity.this, "User with e-mail already exist!", Toast.LENGTH_SHORT).show();
-                                    else {
-                                        Log.w("LoginActivity", "createUserWithEmail:failure", task4.getException());
-                                        Toast.makeText(LoginActivity.this, "User create failed.", Toast.LENGTH_LONG).show();}
+                                    } else {
+                                        if (task4.getException() instanceof FirebaseAuthUserCollisionException)
+                                            Toast.makeText(LoginActivity.this, "User with e-mail already exist!", Toast.LENGTH_SHORT).show();
+                                        else {
+                                            Log.w("LoginActivity", "createUserWithEmail:failure", task4.getException());
+                                            Toast.makeText(LoginActivity.this, "User create failed.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         }
         else
             Toast.makeText(LoginActivity.this, "select organization", Toast.LENGTH_LONG).show();
     }
 
-    private void lostData() {
-        Query query = refYears.orderByKey().limitToLast(1);
-        query.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>(){
-            @Override
-            public void onComplete(@NonNull com.google.android.gms.tasks.Task<DataSnapshot> tsk) {
-                if (tsk.isSuccessful()) {
-                    DataSnapshot dS = tsk.getResult();
-                    for(DataSnapshot data : dS.getChildren()) {
-                        activeYear = Integer.parseInt(data.getKey());
-                    }
-                    if (activeYear == 1970) {
-                        setActiveYear();
-                    } else {
-                        SharedPreferences.Editor editor=settings.edit();
-                        editor.putInt("activeYear",activeYear);
-                        editor.putBoolean("stayConnect",cBstayconnect.isChecked());
-                        editor.commit();
-
-                        Intent si;
-                        if (uid.equals(myUid)) {
-                            si = new Intent(LoginActivity.this, AdminActivity.class);
-                            startActivity(si);
-                        } else if (refActiveUsers != null){
-
-                        }else if (refInactiveUsers != null){
-
-                        }else if (refUsersOnHold != null){
-                            si=new Intent(LoginActivity.this, WaitingActivity.class);
-                            si.putExtra("isNewUser",true);
-                            startActivity(si);
-                        } else{
-                            Toast.makeText(LoginActivity.this, "Error getting data", Toast.LENGTH_SHORT).show();}
-                    }
-                }
-                else {
-                    Log.e("firebase", "Error getting data", tsk.getException());
-                }
-            }
-        });
-    }
-
-    private void setActiveYear() {
-        Intent sifr = new Intent(LoginActivity.this,YearsActivity.class);
-        sifr.putExtra("isNewUser",true);
-        startActivityForResult(sifr, REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    activeYear = data.getIntExtra("activeYear", 1970);
-                    SharedPreferences.Editor editor=settings.edit();
-                    editor.putInt("activeYear",activeYear);
-                    editor.putBoolean("stayConnect",cBstayconnect.isChecked());
-                    editor.commit();
-
-                    Intent si;
-                    if (uid.equals(myUid)) {
-                        si = new Intent(LoginActivity.this, AdminActivity.class);
-                        startActivity(si);
-                    } else if (refActiveUsers != null){
-
-                    }else if (refInactiveUsers != null){
-
-                    }else if (refUsersOnHold != null){
-                        si=new Intent(LoginActivity.this, WaitingActivity.class);
-                        si.putExtra("isNewUser",true);
-                        startActivity(si);
-                    } else{
-                        Toast.makeText(LoginActivity.this, "Error getting data", Toast.LENGTH_SHORT).show();}
-                }
-            }
-        }
-    }
-
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position!=0){
             organization=orgList.get(position);
         }
-
     }
 
     @Override

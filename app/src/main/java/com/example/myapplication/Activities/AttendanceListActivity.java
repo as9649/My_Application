@@ -41,12 +41,6 @@ public class AttendanceListActivity extends AppCompatActivity implements Adapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendance_list);
 
-        initViews();
-
-    }
-
-    private void initViews() {
-
         attendanceLV=findViewById(R.id.attendanceLV);
 
         for (int i=0; i<attendanceList.size(); i++){
@@ -59,17 +53,8 @@ public class AttendanceListActivity extends AppCompatActivity implements Adapter
         attendanceLV.setAdapter(adp);
 
         attendanceLV.setOnItemClickListener(this);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        Date c = Calendar.getInstance().getTime();
-//        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-//        String date = df.format(c);
-//        refOrg.child("Presence").child(date).addValueEventListener(vel);
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent si=new Intent(AttendanceListActivity.this, MapActivity.class);

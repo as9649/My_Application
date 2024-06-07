@@ -29,9 +29,6 @@
             android:name=".Activities.nonActiveListActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.YearsActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activities.EmployeeActivity"
             android:exported="false" />
         <activity

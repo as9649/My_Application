@@ -63,7 +63,10 @@ public class EmployeeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_employee);
-        initViews();
+
+        titleTV=findViewById(R.id.titleTV);
+        locationBtn=findViewById(R.id.locationBtn);
+        titleTV.setText("hello");
 
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -79,12 +82,6 @@ public class EmployeeActivity extends AppCompatActivity {
         });
     }
 
-    private void initViews() {
-        titleTV=findViewById(R.id.titleTV);
-        locationBtn=findViewById(R.id.locationBtn);
-        titleTV.setText("hello");
-
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -102,8 +99,6 @@ public class EmployeeActivity extends AppCompatActivity {
                 }
             }
         }
-
-
     }
 
     @Override
@@ -112,7 +107,6 @@ public class EmployeeActivity extends AppCompatActivity {
 
         if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
-
                 getCurrentLocation();
             }
         }
@@ -152,10 +146,6 @@ public class EmployeeActivity extends AppCompatActivity {
                                                 refPresence.setValue(presencedb);
                                             }
                                         });
-
-
-
-                                        titleTV.setText("Latitude: "+ latitude + "\n" + "Longitude: "+ longitude+ "\n"+ "Date: "+ date);
                                     }
                                 }
                             }, Looper.getMainLooper());
@@ -171,9 +161,6 @@ public class EmployeeActivity extends AppCompatActivity {
     }
 
     private void turnOnGPS() {
-
-
-
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         builder.setAlwaysShow(true);

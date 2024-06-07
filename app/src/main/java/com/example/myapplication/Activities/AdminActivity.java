@@ -24,7 +24,7 @@ public class AdminActivity extends AppCompatActivity {
 
     public void createNewOrg(View view) {
         Organization newOrg=new Organization(orgNameET.getText().toString());
-        refOrganizationsList.setValue(newOrg);
+        refOrganizationsList.child(orgNameET.getText().toString()).setValue(newOrg);
         orgNameET.setText("");
     }
 }

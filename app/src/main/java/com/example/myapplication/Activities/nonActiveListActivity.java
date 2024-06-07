@@ -35,10 +35,6 @@ public class nonActiveListActivity extends AppCompatActivity implements AdapterV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_non_active_list);
 
-        initViews();
-    }
-
-    private void initViews() {
         listView=findViewById(R.id.listView);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setOnItemClickListener(this);
@@ -49,8 +45,8 @@ public class nonActiveListActivity extends AppCompatActivity implements AdapterV
 
         ArrayAdapter<String> adp=new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, nameslist);
         listView.setAdapter(adp);
-
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

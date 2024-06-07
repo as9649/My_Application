@@ -47,13 +47,6 @@
             android:layout_height="0dp"
             android:layout_weight="5" />
 
-        <TextView
-            android:id="@+id/dTv"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:text="distance:" />
-
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"

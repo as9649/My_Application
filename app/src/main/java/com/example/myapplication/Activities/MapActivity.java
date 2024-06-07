@@ -1,4 +1,6 @@
+
 package com.example.myapplication.Activities;
+
 
 import static android.app.PendingIntent.getActivity;
 
@@ -32,11 +34,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     MapView mapView;
     GoogleMap googleMap;
-    TextView dTv;
-    double distance;
-
     double latitude, longitude;
-
     //Location currentLocation;
     //FusedLocationProviderClient fusedLocationProviderClient;
 // bla bla
@@ -50,7 +48,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         latitude=gi.getDoubleExtra("latitude",-1);
         longitude=gi.getDoubleExtra("longitude", -1);
 
-        dTv = findViewById(R.id.dTv);
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         initGoogleMap(savedInstanceState);
@@ -79,15 +76,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
                     // Move camera to the marker and set an appropriate zoom level
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-//                    distance = calculateDistance(markerStart.getPosition(), markerEnd.getPosition());
-//                    dTv.setText("Distance: " + distance);
+
                 }
             }
         });
     }
-
 //
-
+//    public static float calculateDistance(LatLng point1, LatLng point2) {
+//        Location location1 = new Location("point1");
+//        location1.setLatitude(point1.latitude);
+//        location1.setLongitude(point1.longitude);
+//
+//        Location location2 = new Location("point2");
+//        location2.setLatitude(point2.latitude);
+//        location2.setLongitude(point2.longitude);
+//
+//        // Calculate distance in meters
+//        return location1.distanceTo(location2);
+//    }
 
 
     public void Show(View view) {
@@ -142,9 +148,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     }
 
 
-
-
-
     // Other necessary lifecycle methods for MapView
     @Override
     public void onResume() {
@@ -175,8 +178,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
             //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            // to handle the case where the user grants the permission.
             return;
         }
         googleMap.setMyLocationEnabled(true);
