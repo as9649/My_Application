@@ -1,0 +1,170 @@
+@startuml
+class com.example.myapplication.Activities.MapActivity {
++ {static} String MAPVIEW_BUNDLE_KEY
+~ MapView mapView
+~ GoogleMap googleMap
+~ TextView dTv
+~ double latitude
+# void onCreate(Bundle)
+- void showMap()
++ void Show(View)
+- void initGoogleMap(Bundle)
++ void onSaveInstanceState(Bundle)
++ void onResume()
++ void onStart()
++ void onStop()
++ void onMapReady(GoogleMap)
++ void onPause()
++ void onDestroy()
++ void onLowMemory()
+}
+
+
+class com.example.myapplication.Activities.AttendanceListActivity {
+~ ListView attendanceLV
+~ AlertDialog.Builder adb2
+~ String[] attendanceArr
+# void onCreate(Bundle)
++ void onItemClick(AdapterView<?>,View,int,long)
+}
+
+
+class com.example.myapplication.Activities.WaitingActivity {
+# void onCreate(Bundle)
+}
+
+class com.example.myapplication.Activities.LoginActivity {
+- TextView tVtitle
+- EditText eTname
+- CheckBox cBstayconnect
+- Button btn
+~ ArrayList<String> orgList
+- String name
+- String organization
++ {static} User userdb
+- {static} String myUid
+- Boolean registered
+- SharedPreferences settings
+~ Intent si
+# void onCreate(Bundle)
+- void initViews()
+# void onStart()
+- void regoption()
+- void logoption()
++ void logorreg(View)
++ void onItemSelected(AdapterView<?>,View,int,long)
++ void onNothingSelected(AdapterView<?>)
+}
+
+
+class com.example.myapplication.Obj.Organization {
+- String orgName
++ <<Create>> Organization()
++ <<Create>> Organization(String)
++ String getOrgName()
++ void setOrgName(String)
+}
+
+
+class com.example.myapplication.Activities.ManagerActivity {
+~ Button listBtn
++ {static} ArrayList<Presence> attendanceList
++ {static} ArrayList<User> nonActiveUsers
+# void onCreate(Bundle)
+- void initViews()
+# void onResume()
+}
+
+
+class com.example.myapplication.Obj.Presence {
+- String date
+- double latitude
++ <<Create>> Presence()
++ <<Create>> Presence(String,String,String,double,double)
++ String getDate()
++ double getLatitude()
++ double getLongitude()
++ void setDate(String)
++ void setLatitude(double)
++ void setLongitude(double)
++ String getUsername()
++ String getUid()
++ void setUsername(String)
++ void setUid(String)
+}
+
+
+class com.example.myapplication.FBRef {
++ {static} String uid
++ {static} FirebaseDatabase FBDB
++ {static} FirebaseAuth refAuth
++ {static} DatabaseReference refOrganizations
++ {static} DatabaseReference refOrganizationsList
++ {static} DatabaseReference refPresence
++ {static} ArrayList<String> getOrganizationsList()
++ {static} void getUser(FirebaseUser,String)
+}
+
+
+class com.example.myapplication.Activities.EmployeeActivity {
+~ Button locationBtn
+~ TextView titleTV
+- LocationRequest locationRequest
+# void onCreate(Bundle)
++ void onRequestPermissionsResult(int,String[],int[])
+# void onActivityResult(int,int,Intent)
+- void getCurrentLocation()
+- void turnOnGPS()
+- boolean isGPSEnabled()
+}
+
+
+class com.example.myapplication.Activities.AdminActivity {
+~ EditText orgNameET
+# void onCreate(Bundle)
++ void createNewOrg(View)
+}
+
+
+class com.example.myapplication.Obj.User {
+- String uid
+- boolean active
++ <<Create>> User()
++ <<Create>> User(String,String,String,boolean,boolean)
++ String getUid()
++ void setUid(String)
++ String getUsername()
++ void setUsername(String)
++ String getOrganization()
++ void setOrganization(String)
++ boolean isActive()
++ void setActive(boolean)
++ boolean isManager()
++ void setManager(boolean)
+}
+
+
+class com.example.myapplication.Activities.nonActiveListActivity {
+~ ListView listView
+~ AlertDialog.Builder adb
++ {static} String[] nameslist
+# void onCreate(Bundle)
++ void onItemClick(AdapterView<?>,View,int,long)
+}
+
+
+
+
+com.google.android.gms.maps.OnMapReadyCallback <|.. com.example.myapplication.Activities.MapActivity
+androidx.fragment.app.FragmentActivity <|-- com.example.myapplication.Activities.MapActivity
+com.example.myapplication.Activities.OnItemClickListener <|.. com.example.myapplication.Activities.AttendanceListActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.AttendanceListActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.WaitingActivity
+com.example.myapplication.Activities.OnItemSelectedListener <|.. com.example.myapplication.Activities.LoginActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.LoginActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.ManagerActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.EmployeeActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.AdminActivity
+com.example.myapplication.Activities.OnItemClickListener <|.. com.example.myapplication.Activities.nonActiveListActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.myapplication.Activities.nonActiveListActivity
+@enduml
